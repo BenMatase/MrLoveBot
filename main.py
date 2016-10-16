@@ -50,9 +50,10 @@ def like(bot, update):
 
     if(reply_id not in msg_db[chat_id].keys()):
         liked_msg = LikedMsg(update.message.reply_to_message)
+        liked_msg.add_liker(update.message.from_user)
         msg_db[chat_id][reply_id] = liked_msg
     else:
-        msg_db[chat_id][reply_id].count += 1
+        msg_db[chat_id][reply_id].add_liker(update.message.from_user)
 
     bot.sendMessage(update.message.chat_id, text=str(msg_db[chat_id][reply_id]))
 
