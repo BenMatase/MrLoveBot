@@ -26,7 +26,7 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 
 logger = logging.getLogger(__name__)
 
-msg_db = {}
+msg_db = Database()
 
 # Define a few command handlers. These usually take the two arguments bot and
 # update. Error handlers also receive the raised TelegramError object in error.
@@ -42,30 +42,18 @@ def error(bot, update, error):
     logger.warn('Update "%s" caused error "%s"' % (update, error))
 
 def like(bot, update):
-    chat_id = update.message.chat_id
-    reply_id = update.message.reply_to_message.message_id
-
-    if(chat_id not in msg_db.keys()):
-        msg_db[chat_id] = {}
-
-    if(reply_id not in msg_db[chat_id].keys()):
-        liked_msg = LikedMsg(update.message.reply_to_message)
-        liked_msg.add_liker(update.message.from_user)
-        msg_db[chat_id][reply_id] = liked_msg
-    else:
-        msg_db[chat_id][reply_id].add_liker(update.message.from_user)
-
-    bot.sendMessage(update.message.chat_id, text=str(msg_db[chat_id][reply_id]))
+    msg_db.insert(update.message)
+    bot.sendMessage(update.message.chat_id, text=Database.getStr(update.message))
 
 def getTopLiked(bot, update):
     chat_id = update.message.chat_id
-    for reply_id in msg_db[chat_id].keys():
-        bot.sendMessage(chat_id, text=str(msg_db[chat_id][reply_id]))
+    bot.sendMessage(chat_id, text=Database.getTopN(chat_id, 10))
 
 def getTopN(bot, update):
-    numTop = update.message.text
+    # Should make this more robust
+    num_top = update.message.text.split()[1]
     chat_id = update.message.chat_id
-    bot.sendMessage(chat_id, text=str(numTop))
+    bot.sendMessage(chat_id, text=Database.getTopN(chat_id, num_top))
 
 def checkArgs(args, type_args):
     if(len(args) == len(type_args)):
