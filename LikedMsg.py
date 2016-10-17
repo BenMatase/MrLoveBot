@@ -15,3 +15,9 @@ class LikedMsg:
         liker_ids = [x.id for x in self.likers]
         if(liker.id not in liker_ids):
             self.likers.append(liker);
+
+    def get_sort_val(self):
+        return(len(self.likers))
+
+    def get_reply_id(self):
+        return(self.message.message_id)

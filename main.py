@@ -18,7 +18,7 @@ bot.
 
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import logging
-from LikedMsg import LikedMsg
+from Database import Database
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -43,17 +43,17 @@ def error(bot, update, error):
 
 def like(bot, update):
     msg_db.insert(update.message)
-    bot.sendMessage(update.message.chat_id, text=Database.getStr(update.message))
+    bot.sendMessage(update.message.chat_id, text=msg_db.getStr(update.message))
 
 def getTopLiked(bot, update):
     chat_id = update.message.chat_id
-    bot.sendMessage(chat_id, text=Database.getTopN(chat_id, 10))
+    bot.sendMessage(chat_id, text=msg_db.getTopNStr(chat_id, 10))
 
 def getTopN(bot, update):
     # Should make this more robust
     num_top = update.message.text.split()[1]
     chat_id = update.message.chat_id
-    bot.sendMessage(chat_id, text=Database.getTopN(chat_id, num_top))
+    bot.sendMessage(chat_id, text=msg_db.getTopNStr(chat_id, num_top))
 
 def checkArgs(args, type_args):
     if(len(args) == len(type_args)):
