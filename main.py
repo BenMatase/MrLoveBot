@@ -18,7 +18,7 @@ bot.
 
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import logging
-from Database import Database
+from Database import *
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -26,7 +26,11 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 
 logger = logging.getLogger(__name__)
 
-msg_db = Database()
+DATABASE_FILE_NAME = 'likedmsg.db'
+
+print("Loading database...")
+msg_db = load_database(DATABASE_FILE_NAME)
+print("Done loading database.")
 
 # Define a few command handlers. These usually take the two arguments bot and
 # update. Error handlers also receive the raised TelegramError object in error.
@@ -44,6 +48,7 @@ def error(bot, update, error):
 def like(bot, update):
     msg_db.insert(update.message)
     bot.sendMessage(update.message.chat_id, text=msg_db.getStr(update.message))
+    save_database(msg_db, DATABASE_FILE_NAME)
 
 def getTopLiked(bot, update):
     chat_id = update.message.chat_id

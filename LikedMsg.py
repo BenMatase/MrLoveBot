@@ -1,14 +1,15 @@
+MSG_LIM = 40
+
 class LikedMsg:
     def __init__(self, message):
         self.message = message
         self.likers = []
 
     def __str__(self):
-        return "Message from {} on {} that said \"{}\" with points = {}".format(
+        return "{} [{}]: \"{}\"".format(
             self.message.from_user.username,
-            str(self.message.date),
-            self.message.text,
-            str(len(self.likers))
+            str(len(self.likers)),
+            self.limit_length(self.message.text, MSG_LIM)
         )
 
     def add_liker(self, liker):
@@ -21,3 +22,9 @@ class LikedMsg:
 
     def get_reply_id(self):
         return(self.message.message_id)
+
+    def limit_length(self, msg, length):
+        if len(msg) > length:
+            return msg[:length]
+        else:
+            return msg

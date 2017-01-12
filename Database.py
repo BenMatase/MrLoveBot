@@ -1,5 +1,8 @@
 from sortedcontainers import SortedListWithKey
 from LikedMsg import LikedMsg
+import dill as pickle
+# import pickle
+import os.path
 
 class Database:
     def __init__(self):
@@ -45,3 +48,12 @@ class Database:
             output += '{}. {} \n'.format(i, str(msg))
             i += 1
         return(output)
+
+def load_database(fname):
+    if os.path.isfile(fname):
+        return pickle.load(open(fname, 'rb'))
+    else:
+        return Database()
+
+def save_database(db, fname):
+    pickle.dump(db, open(fname, 'wb'))
