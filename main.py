@@ -64,6 +64,11 @@ def checkArgs(args, type_args):
     if(len(args) == len(type_args)):
         return "Use of topN: \"/topn [number]\""
 
+def clear_db(bot, update):
+    chat_id = update.message.chat_id
+    msg_db.clearForChat(chat_id)
+    bot.sendMessage(update.message.chat_id, text='The database of liked messages has been deleted')
+
 def main():
     with open("botCode.txt", "r") as f:
         lines = f.readlines()
@@ -82,6 +87,7 @@ def main():
     dp.add_handler(CommandHandler("l", like))
     dp.add_handler(CommandHandler("top", getTopLiked))
     dp.add_handler(CommandHandler("topn", getTopN))
+    dp.add_handler(CommandHandler("cleardb", clear_db))
 
     # on noncommand i.e message - echo the message on Telegram
     # dp.add_handler(MessageHandler([Filters.text], echo))

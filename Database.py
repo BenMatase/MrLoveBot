@@ -49,6 +49,9 @@ class Database:
             i += 1
         return(output)
 
+    def clearForChat(self, chat_id):
+        del self.db[chat_id]
+
 def load_database(fname):
     if os.path.isfile(fname):
         return pickle.load(open(fname, 'rb'))
